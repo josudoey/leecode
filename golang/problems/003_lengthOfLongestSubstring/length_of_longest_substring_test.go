@@ -1,4 +1,4 @@
-package lengthOfLongestSubstring
+package code
 
 import (
 	"testing"

@@ -1,4 +1,4 @@
-package lengthOfLongestSubstring
+package code
 
 // ref https://leetcode.com/problems/longest-substring-without-repeating-characters/
 
