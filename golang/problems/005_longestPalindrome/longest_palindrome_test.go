@@ -27,6 +27,18 @@ var _ = DescribeTable("longestPalindrome",
 		"bb",
 		"bb",
 	),
+	Entry("Case 5",
+		"abb",
+		"bb",
+	),
+	Entry("Case 6",
+		"aacabdkacaa",
+		"aca",
+	),
+	Entry("case 7",
+		"jglknendplocymmvwtoxvebkekzfdhykknufqdkntnqvgfbahsljkobhbxkvyictzkqjqydczuxjkgecdyhixdttxfqmgksrkyvopwprsgoszftuhawflzjyuyrujrxluhzjvbflxgcovilthvuihzttzithnsqbdxtafxrfrblulsakrahulwthhbjcslceewxfxtavljpimaqqlcbrdgtgjryjytgxljxtravwdlnrrauxplempnbfeusgtqzjtzshwieutxdytlrrqvyemlyzolhbkzhyfyttevqnfvmpqjngcnazmaagwihxrhmcibyfkccyrqwnzlzqeuenhwlzhbxqxerfifzncimwqsfatudjihtumrtjtggzleovihifxufvwqeimbxvzlxwcsknksogsbwwdlwulnetdysvsfkonggeedtshxqkgbhoscjgpiel",
+		"sknks",
+	),
 )
 
 func TestCode(t *testing.T) {

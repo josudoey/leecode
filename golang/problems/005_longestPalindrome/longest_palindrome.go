@@ -13,55 +13,39 @@ package code
 // Output: "bb"
 
 func longestPalindrome(s string) string {
-	palindromeCache := map[string]struct{}{}
-
-	size := len(s)
-	if size == 0 {
-		return ""
+	length := len(s)
+	if length < 2 {
+		return s
 	}
 
-	longest := s[0:1]
-	longestSize := 1
-	for i := 0; i < size-1; i++ {
-		for j := i + 1; j < size; j++ {
-			substrSize := j - i + 1
-			if substrSize <= longestSize {
-				continue
+	longestLeftIndex := 0
+	longestLength := 1
+	for leftIndex := 0; leftIndex < length; leftIndex++ {
+		for rightIndex := length - 1; rightIndex > leftIndex; rightIndex-- {
+			checkLength := rightIndex - leftIndex + 1
+			if checkLength <= longestLength {
+				break
 			}
 
-			substr := s[i : j+1]
-			if checkPalindrome(substr, palindromeCache) {
-				palindromeCache[substr] = struct{}{}
-				longest = substr
-				longestSize = substrSize
+			if isPalindrome(s, leftIndex, rightIndex) {
+				longestLeftIndex = leftIndex
+				longestLength = checkLength
 			}
 		}
 	}
 
-	return longest
+	return s[longestLeftIndex : longestLeftIndex+longestLength]
 }
 
-func checkPalindrome(s string, palindromeCache map[string]struct{}) bool {
-	size := len(s)
-	if size < 2 {
-		return size == 1
-	}
-
-	if _, ok := palindromeCache[s]; ok {
-		return true
-	}
-
-	halfSize := size / 2
-	leftIndex := halfSize - 1
-	rightIndex := halfSize
-
-	if size%2 == 1 {
-		rightIndex += 1
-	}
-
-	for i := 0; i < halfSize; i++ {
-		if s[leftIndex-i] != s[rightIndex+i] {
+func isPalindrome(s string, leftIndex int, rightIndex int) bool {
+	for {
+		if s[leftIndex] != s[rightIndex] {
 			return false
+		}
+		leftIndex++
+		rightIndex--
+		if leftIndex >= rightIndex {
+			break
 		}
 	}
 
