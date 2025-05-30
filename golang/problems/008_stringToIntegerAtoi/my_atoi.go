@@ -2,8 +2,6 @@ package code
 
 import (
 	"math"
-	"regexp"
-	"strconv"
 )
 
 // ref https://leetcode.com/problems/string-to-integer-atoi/
@@ -56,22 +54,55 @@ import (
 // Explanation:
 // Reading stops at the first non-digit character 'w'.
 
-var integerRegexp = regexp.MustCompile("^\\s*([+-]?[0-9]+).*")
-
 func myAtoi(s string) int {
-	result := 0
+	currentIndex := 0
+	for currentIndex < len(s) {
+		if s[currentIndex] != ' ' {
+			break
+		}
 
-	matchedStrings := integerRegexp.FindStringSubmatch(s)
-	if len(matchedStrings) == 0 {
-		return result
+		currentIndex++
 	}
 
-	n, _ := strconv.ParseInt(matchedStrings[1], 10, 64)
-	if n > math.MaxInt32 {
+	if currentIndex == len(s) {
+		return 0
+	}
+
+	result := 0
+	sign := 1
+	if s[currentIndex] == '-' {
+		sign = -1
+		currentIndex++
+	} else if s[currentIndex] == '+' {
+		currentIndex++
+	}
+
+	for currentIndex < len(s) {
+		if s[currentIndex] < '0' || s[currentIndex] > '9' {
+			break
+		}
+
+		digit := int(s[currentIndex] - '0')
+		if result > math.MaxInt32 {
+			if sign == 1 {
+				return math.MaxInt32
+			}
+			return math.MinInt32
+		}
+
+		result = result*10 + digit
+		currentIndex++
+	}
+
+	result *= sign
+
+	if result > math.MaxInt32 {
 		return math.MaxInt32
-	} else if n < math.MinInt32 {
+	}
+
+	if result < math.MinInt32 {
 		return math.MinInt32
 	}
 
-	return int(n)
+	return result
 }
