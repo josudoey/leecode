@@ -17,60 +17,30 @@ package code
 // Output: 1994
 // Explanation: M = 1000, CM = 900, XC = 90 and IV = 4.
 
-var romanSymbolMap = map[string]int{
-	"I":    1,
-	"II":   2,
-	"III":  3,
-	"IV":   4,
-	"V":    5,
-	"VI":   6,
-	"VII":  7,
-	"VIII": 8,
-	"IX":   9,
-	"X":    10,
-	"XX":   20,
-	"XXX":  30,
-	"XL":   40,
-	"L":    50,
-	"LX":   60,
-	"LXX":  70,
-	"LXXX": 80,
-	"XC":   90,
-	"C":    100,
-	"CC":   200,
-	"CCC":  300,
-	"CD":   400,
-	"D":    500,
-	"DC":   600,
-	"DCC":  700,
-	"DCCC": 800,
-	"CM":   900,
-	"M":    1000,
-	"MM":   2000,
-	"MMM":  3000,
+var romanNumeralMap = map[byte]int{
+	'I': 1,
+	'V': 5,
+	'X': 10,
+	'L': 50,
+	'C': 100,
+	'D': 500,
+	'M': 1000,
 }
 
 func romanToInt(s string) int {
-	var (
-		result = 0
-		head   = ""
-		value  = 0
-	)
-
-	for _, c := range s {
-		symbol := head + string(c)
-		v, ok := romanSymbolMap[symbol]
-		if ok {
-			head = symbol
-			value = v
+	result := 0
+	for index := 0; index < len(s)-1; index++ {
+		value := romanNumeralMap[s[index]]
+		nextIndex := index + 1
+		nextValue := romanNumeralMap[s[nextIndex]]
+		if nextValue > value {
+			result -= value
 			continue
 		}
 
 		result += value
-		head = string(c)
-		value = romanSymbolMap[head]
 	}
 
-	result += value
+	result += romanNumeralMap[s[len(s)-1]]
 	return result
 }
