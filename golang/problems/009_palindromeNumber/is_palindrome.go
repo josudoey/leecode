@@ -1,7 +1,5 @@
 package code
 
-import "math"
-
 // ref https://leetcode.com/problems/palindrome-number/
 
 // Example 1:
@@ -24,23 +22,14 @@ func isPalindrome(x int) bool {
 		return false
 	}
 
-	log10x := math.Log10(float64(x))
-	leftDigitDivisor := int(math.Pow10(int(log10x)))
-	for x != 0 {
-		if leftDigitDivisor == 1 {
-			break
-		}
+	reversedNumber := 0
+	leadingDigits := x
 
-		rightDigit := x % 10
-		leftDigit := x / leftDigitDivisor
-
-		if rightDigit != leftDigit {
-			return false
-		}
-
-		x = (x % leftDigitDivisor) / 10
-		leftDigitDivisor = leftDigitDivisor / 100
+	for leadingDigits > 0 {
+		digit := leadingDigits % 10
+		reversedNumber = reversedNumber*10 + digit
+		leadingDigits /= 10
 	}
 
-	return true
+	return x == reversedNumber
 }
