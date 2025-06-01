@@ -26,82 +26,41 @@ import (
 // Output: [[0,0,0]]
 // Explanation: The only possible triplet sums up to 0.
 
-type TripletFilter struct {
-	set map[int]map[int]map[int]struct{}
-}
-
-func newTripletFilter() *TripletFilter {
-	return &TripletFilter{
-		set: map[int]map[int]map[int]struct{}{},
-	}
-}
-
-func (f *TripletFilter) Test(n0 int, n1 int, n2 int) bool {
-	m0, ok := f.set[n0]
-	if !ok {
-		return false
-	}
-
-	m1, ok := m0[n1]
-	if !ok {
-		return false
-	}
-
-	_, ok = m1[n2]
-	return ok
-}
-
-func (f *TripletFilter) Add(n0 int, n1 int, n2 int) {
-	m0, ok := f.set[n0]
-	if !ok {
-		m0 = map[int]map[int]struct{}{}
-		f.set[n0] = m0
-	}
-
-	m1, ok := m0[n1]
-	if !ok {
-		m1 = map[int]struct{}{}
-		m0[n1] = m1
-	}
-
-	m1[n2] = struct{}{}
-}
-
-func abs(n int) int {
-	if n < 0 {
-		return -n
-	}
-	return n
-}
-
 func threeSum(nums []int) [][]int {
 	sort.Ints(nums)
 	result := [][]int{}
-	tripletFilter := newTripletFilter()
 
 	for i := 0; i < len(nums)-2; i++ {
+		if i > 0 && nums[i] == nums[i-1] {
+			continue
+		}
+
 		first := nums[i]
 		leftIndex, rightIndex := i+1, len(nums)-1
 		for leftIndex < rightIndex {
 			second, third := nums[leftIndex], nums[rightIndex]
 			subtotal := second + third
 
-			if -first < subtotal {
-				rightIndex--
-			} else {
+			if -first != subtotal {
+				if -first < subtotal {
+					rightIndex--
+				} else {
+					leftIndex++
+				}
+
+				continue
+			}
+
+			result = append(result, []int{first, second, third})
+
+			for leftIndex < rightIndex && second == nums[leftIndex+1] {
 				leftIndex++
 			}
-
-			if -first != subtotal {
-				continue
+			for leftIndex < rightIndex && third == nums[rightIndex-1] {
+				rightIndex--
 			}
-
-			if tripletFilter.Test(first, second, third) {
-				continue
-			}
-
-			tripletFilter.Add(first, second, third)
-			result = append(result, []int{first, second, third})
+			leftIndex++
+			rightIndex--
 		}
 	}
 
