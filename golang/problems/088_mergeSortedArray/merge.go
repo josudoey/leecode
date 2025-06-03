@@ -22,32 +22,16 @@ package code
 // Note that because m = 0, there are no elements in nums1. The 0 is only there to ensure the merge result can fit in nums1.
 
 func merge(nums1 []int, m int, nums2 []int, n int) {
-	result := nums1
-	mSlice, nSlice := make([]int, len(nums1)), nums2
-	copy(mSlice, nums1)
-
-	index, index1, index2 := 0, 0, 0
-	for index1 < m && index2 < n {
-		if mSlice[index1] <= nSlice[index2] {
-			result[index] = mSlice[index1]
-			index++
-			index1++
+	index, index1, index2 := m+n-1, m-1, n-1
+	for index >= 0 && index2 >= 0 {
+		if index1 > 0 && nums1[index1] > nums2[index2] {
+			nums1[index] = nums1[index1]
+			index1 -= 1
 		} else {
-			result[index] = nSlice[index2]
-			index++
-			index2++
+			nums1[index] = nums2[index2]
+			index2 -= 1
 		}
-	}
 
-	for index1 < m {
-		result[index] = mSlice[index1]
-		index++
-		index1++
-	}
-
-	for index2 < n {
-		result[index] = nSlice[index2]
-		index++
-		index2++
+		index--
 	}
 }
