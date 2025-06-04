@@ -12,14 +12,20 @@ package code
 
 func majorityElement(nums []int) int {
 	numSet := map[int]int{}
-	majorityCount := len(nums) / 2
-
-	for _, n := range nums {
-		numSet[n] = numSet[n] + 1
-		if numSet[n] > majorityCount {
-			return n
-		}
+	for _, num := range nums {
+		numSet[num] = numSet[num] + 1
 	}
 
-	return 0
+	var maxNum, maxCount int
+
+	for num, count := range numSet {
+		if maxCount >= count {
+			continue
+		}
+
+		maxCount = count
+		maxNum = num
+	}
+
+	return maxNum
 }
