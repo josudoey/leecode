@@ -18,10 +18,17 @@ package code
 // rotate 2 steps to the right: [3,99,-1,-100]
 
 func rotate(nums []int, k int) {
-	origin := make([]int, len(nums))
-	copy(origin, nums)
-	offset := k % len(nums)
-	for i := 0; i < len(nums); i++ {
-		nums[(i+offset)%len(nums)] = origin[i]
+	k = k % len(nums)
+
+	reverse(nums, 0, len(nums)-1)
+	reverse(nums, 0, k-1)
+	reverse(nums, k, len(nums)-1)
+}
+
+func reverse(nums []int, headIndex int, tailIndex int) {
+	for headIndex < tailIndex {
+		nums[headIndex], nums[tailIndex] = nums[tailIndex], nums[headIndex]
+		headIndex++
+		tailIndex--
 	}
 }
