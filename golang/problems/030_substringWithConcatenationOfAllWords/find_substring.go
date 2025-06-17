@@ -1,5 +1,9 @@
 package code
 
+import (
+	"hash/crc32"
+)
+
 // ref https://leetcode.com/problems/substring-with-concatenation-of-all-words/
 
 // Example 1:
@@ -23,52 +27,51 @@ package code
 // The substring starting at 9 is "barthefoo". It is the concatenation of ["bar","the","foo"].
 // The substring starting at 12 is "thefoobar". It is the concatenation of ["the","foo","bar"].
 
+func crc32Checksum(s string) int {
+	return int(crc32.ChecksumIEEE([]byte(s)))
+}
+
 func findSubstring(s string, words []string) []int {
 	var (
 		result = []int{}
 
-		wordCountMap = map[string]int{}
+		wordCountMap  = map[string]int{}
+		wordVectorMap = map[string]int{}
 	)
 
 	for _, word := range words {
-		wordCountMap[word]++
+		if count, exists := wordCountMap[word]; exists {
+			wordCountMap[word] = count + 1
+			continue
+		}
+
+		wordCountMap[word] = 1
+		wordVector := crc32Checksum(word)
+		wordVectorMap[word] = int(wordVector)
+	}
+
+	expectedCheckSum := 0
+	for word, vector := range wordVectorMap {
+		expectedCheckSum += (vector * wordCountMap[word])
 	}
 
 	lengthPerWord := len(words[0])
 	substringLength := lengthPerWord * len(words)
 	for i := 0; i <= len(s)-substringLength; i++ {
-		currentWordCount := map[string]int{}
+		checkSum := 0
 
 		for j := 0; j < len(words); j++ {
 			offset := i + (j * lengthPerWord)
 			word := s[offset : offset+lengthPerWord]
 
-			count, ok := wordCountMap[word]
+			wordVector, ok := wordVectorMap[word]
 			if !ok {
 				break
 			}
-
-			currentWordCount[word]++
-			if currentWordCount[word] > count {
-				break
-			}
+			checkSum += wordVector
 		}
 
-		if len(currentWordCount) != len(wordCountMap) {
-			continue
-		}
-
-		matched := true
-		for word, count := range wordCountMap {
-			if currentWordCount[word] == count {
-				continue
-			}
-
-			matched = false
-			break
-		}
-
-		if !matched {
+		if checkSum != expectedCheckSum {
 			continue
 		}
 
