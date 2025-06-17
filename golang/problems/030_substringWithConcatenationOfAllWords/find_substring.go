@@ -1,9 +1,5 @@
 package code
 
-import (
-	"hash/crc32"
-)
-
 // ref https://leetcode.com/problems/substring-with-concatenation-of-all-words/
 
 // Example 1:
@@ -27,8 +23,12 @@ import (
 // The substring starting at 9 is "barthefoo". It is the concatenation of ["bar","the","foo"].
 // The substring starting at 12 is "thefoobar". It is the concatenation of ["the","foo","bar"].
 
-func crc32Checksum(s string) int {
-	return int(crc32.ChecksumIEEE([]byte(s)))
+func hash(key int) int {
+	const A = 2654435769        // 2^32 / phi
+	const primeMod = 4294967291 // 2^32 - 5
+
+	hash := (uint64(key) * A) % uint64(primeMod)
+	return int(hash)
 }
 
 func findSubstring(s string, words []string) []int {
@@ -39,14 +39,16 @@ func findSubstring(s string, words []string) []int {
 		wordVectorMap = map[string]int{}
 	)
 
+	uniqueCounter := 0
 	for _, word := range words {
 		if count, exists := wordCountMap[word]; exists {
 			wordCountMap[word] = count + 1
 			continue
 		}
 
+		uniqueCounter++
 		wordCountMap[word] = 1
-		wordVector := crc32Checksum(word)
+		wordVector := hash(uniqueCounter)
 		wordVectorMap[word] = int(wordVector)
 	}
 
