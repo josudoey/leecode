@@ -13,40 +13,43 @@ package code
 func spiralOrder(matrix [][]int) []int {
 	m := len(matrix)
 	n := len(matrix[0])
-	if m*n == 1 {
+	resultLength := m * n
+	if resultLength == 1 {
 		return []int{matrix[0][0]}
 	}
-	result := make([]int, m*n)
-	gone := make([]interface{}, m*n)
-	moveMatrix := [][]int{
-		{0, 1},
-		{1, 0},
-		{0, -1},
-		{-1, 0},
-	}
-	currentState := 0
 
-	i, j := 0, 0
-	for index := range result {
-		result[index] = matrix[i][j]
-		gone[i*n+j] = struct{}{}
-		offset := moveMatrix[currentState]
-		nextI, nextJ := i+offset[0], j+offset[1]
+	result := make([]int, 0, resultLength)
+	topIndex, bottomLimit := 0, len(matrix)
+	leftIndex, rightLimit := 0, len(matrix[0])
+	for leftIndex < rightLimit {
+		for i := leftIndex; i < rightLimit; i++ {
+			result = append(result, matrix[topIndex][i])
+		}
+		topIndex++
 
-		for nextI < 0 || nextI >= m || nextJ < 0 || nextJ >= n {
-			currentState = (currentState + 1) % 4
-			offset := moveMatrix[currentState]
-			nextI, nextJ = i+offset[0], j+offset[1]
+		for i := topIndex; i < bottomLimit; i++ {
+			result = append(result, matrix[i][rightLimit-1])
+		}
+		rightLimit--
+
+		if leftIndex == rightLimit || topIndex == bottomLimit {
+			break
 		}
 
-		if gone[(nextI*n)+nextJ] == struct{}{} {
-			currentState = (currentState + 1) % 4
-			offset := moveMatrix[currentState]
-			nextI, nextJ = i+offset[0], j+offset[1]
+		for i := rightLimit - 1; i >= leftIndex; i-- {
+			result = append(result, matrix[bottomLimit-1][i])
 		}
-		i, j = nextI, nextJ
+		bottomLimit--
+
+		for i := bottomLimit - 1; i >= topIndex; i-- {
+			result = append(result, matrix[i][leftIndex])
+		}
+		leftIndex++
+
+		if leftIndex == rightLimit || topIndex == bottomLimit {
+			break
+		}
 	}
 
 	return result
-
 }
