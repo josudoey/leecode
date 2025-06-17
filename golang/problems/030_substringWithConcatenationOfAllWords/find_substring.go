@@ -58,26 +58,33 @@ func findSubstring(s string, words []string) []int {
 	}
 
 	lengthPerWord := len(words[0])
-	substringLength := lengthPerWord * len(words)
-	for i := 0; i <= len(s)-substringLength; i++ {
-		checkSum := 0
+	for offset := 0; offset < lengthPerWord; offset++ {
+		currentWordCount, checkSum := 0, 0
 
-		for j := 0; j < len(words); j++ {
-			offset := i + (j * lengthPerWord)
-			word := s[offset : offset+lengthPerWord]
+		for i := offset; i <= len(s)-lengthPerWord; i += lengthPerWord {
+			word := s[i : i+lengthPerWord]
 
 			wordVector, ok := wordVectorMap[word]
 			if !ok {
-				break
+				currentWordCount, checkSum = 0, 0
+				continue
 			}
+
+			currentWordCount++
 			checkSum += wordVector
-		}
 
-		if checkSum != expectedCheckSum {
-			continue
-		}
+			if currentWordCount != len(words) {
+				continue
+			}
 
-		result = append(result, i)
+			firstWordIndex := i - ((len(words) - 1) * lengthPerWord)
+			if checkSum == expectedCheckSum {
+				result = append(result, firstWordIndex)
+			}
+
+			checkSum -= wordVectorMap[s[firstWordIndex:firstWordIndex+lengthPerWord]]
+			currentWordCount--
+		}
 	}
 
 	return result
